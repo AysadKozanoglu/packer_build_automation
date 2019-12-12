@@ -1,0 +1,101 @@
+{
+  "variables": {
+    "ansible_roles_path": "./ansible/roles",
+    "build_id": "{{isotime \"20060102150405\"}}",
+    "build_ref": "ver1.0",
+    "build_name": "packer-debian9-qemu-kvm",
+    "disk_size": "10240",
+    "iso_checksum": "6953c392ac4d47cd951b5418a59f857d268ec22fc24c26878053f2b78f9e4bd8dd0791336a55c175a79a6855f89fe18f93125c0c7593977955b3baf4d71fa4b4",
+    "iso_checksum_type": "sha512",
+    "iso_name": "debian-9.11.0-amd64-netinst.iso",
+    "local_domain": "cloudcompute.local.com",
+    "local_mirror_url": "http://localhost",
+    "output_dir": "output",
+    "dynamic_mirror_url": "http://aysad.pe.hu/packages/cd-images/debian/9.11.0/amd64/iso-cd",
+    "remote_mirror_url": "http://aysad.pe.hu/packages/cd-images/debian/9.11.0/amd64/iso-cd"
+  },
+
+  "builders": [
+    {
+      "accelerator": "kvm",
+      "boot_command": [
+        "<esc><wait>",
+        "auto <wait>",
+        "console-keymaps-at/keymap=de <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "debian-installer=en_US <wait>",
+        "fb=false <wait>",
+        "install <wait>",
+        "kbd-chooser/method=de <wait>",
+        "keyboard-configuration/xkb-keymap=de <wait>",
+        "locale=en_US <wait>",
+        "netcfg/get_domain={{ user `local_domain` }} <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "preseed/url=http://aysad.pe.hu/packages/cd-images/debian/preseed/preseed.cfg <wait>",
+        "<enter><wait>"
+      ],
+      "boot_wait": "5s",
+      "disk_size": "{{ user `disk_size` }}",
+      "format": "qcow2",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_urls": [
+        "{{ user `local_mirror_url` }}/{{ user `iso_name` }}",
+        "{{ user `dynamic_mirror_url` }}/{{ user `iso_name` }}",
+        "{{ user `remote_mirror_url` }}/{{ user `iso_name` }}"
+      ],
+      "output_directory": "{{ user `output_dir` }}/{{ user `build_name` }}-qemu-{{ user `build_id` }}",
+      "qemuargs": [
+          [ "-m", "1024M" ]
+      ],
+      "shutdown_command": "sudo /sbin/halt -h -p",
+      "ssh_password": "root",
+      "ssh_port": 22,
+      "ssh_username": "root",
+      "ssh_wait_timeout": "1800s",
+      "type": "qemu",
+      "vm_name": "{{ user `build_name` }}-{{ user `build_ref` }}-{{ user `build_id` }}"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} bash '{{.Path}}'",
+      "inline": [
+        "sleep 15",
+        "DEBIAN_FRONTEND=noninteractive apt-get -y update",
+        "DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" dist-upgrade",
+        "DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" install build-essential python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev",
+        "DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" --purge remove python-cffi",
+        "wget https://bootstrap.pypa.io/get-pip.py -O /usr/local/bin/get-pip.py",
+        "chmod +x /usr/local/bin/get-pip.py",
+        "python /usr/local/bin/get-pip.py",
+        "pip install ansible==2.4.2"
+        ]
+    },
+    {
+      "type": "ansible-local",
+      "group_vars": "ansible/inventory/group_vars",
+      "playbook_dir": "ansible",
+      "playbook_file": "ansible/playbook.yml",
+      "role_paths": [
+        "{{ user `ansible_roles_path` }}/serial-console"
+      ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} bash '{{.Path}}'",
+      "inline": [
+        "pip uninstall -y ansible httplib2 Jinja2 paramiko PyYAML six",
+        "apt-get -y purge python-dev python-pip libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev",
+        "apt-get -y autoremove --purge",
+        "apt-get -y clean",
+        "rm -rf /tmp ; mkdir /tmp ; chmod 1777 /tmp"
+      ]
+    }
+  ]
+}

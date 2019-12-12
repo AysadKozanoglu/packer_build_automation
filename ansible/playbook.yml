@@ -1,0 +1,40 @@
+---
+- hosts: all
+  roles:
+    - { role: serial-console }
+
+  pre_tasks:
+    - name: Install misc packages
+      package:
+        name: "{{ item }}"
+        state: present
+      become: yes
+      register: install_misc_packages
+      until: install_misc_packages | succeeded
+      retries: 3
+      delay: 10
+      with_items:
+        - acpi
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - dbus
+        - dnsutils
+        - gdisk
+        - htop
+        - iftop
+        - iotop
+        - lsof
+        - netcat-openbsd
+        - ntp
+        - parted
+        - psmisc
+        - rsync
+        - smartmontools
+        - systemd
+        - tcpdump
+        - wget
+
+    - include: tasks/disable-persistent-network-names.yml
+
+    - include: tasks/default-editor-vim-nox.yml
