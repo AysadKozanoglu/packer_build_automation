@@ -52,7 +52,7 @@
           [ "-m", "1024M" ]
       ],
       "shutdown_command": "sudo /sbin/halt -h -p",
-      "ssh_password": "root",
+      "ssh_password": "toor!",
       "ssh_port": 22,
       "ssh_username": "root",
       "ssh_wait_timeout": "1800s",
