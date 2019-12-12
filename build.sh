@@ -18,7 +18,8 @@
     
        INFO_ERR_KVM="HATA: 'qemu-system-x86_64' bulunamadi. \n Devam etmek icin önce qemu-kvm kur.\n YARDIM: \n DEBIAN: apt install qemu qemu-kvm \n CENTOS: yum install qemu-kvm libvirt libvirt-python libguestfs-tools virt-install "
 
-#  INFO_ERR_ANSIBLE="HATA: 'ansible' bulunamadi. \n Devam etmek icin  önce ansible  kur.\n YARDIM: \n DEBIAN: apt install ansible \n CENTOS(7): yum install ansible "
+
+#INFO_ERR_ANSIBLE="HATA: 'ansible' bulunamadi. \n Devam etmek icin  önce ansible  kur.\n YARDIM: \n DEBIAN: apt install ansible \n CENTOS(7): yum install ansible "
 
 
 function YARDIM() {
