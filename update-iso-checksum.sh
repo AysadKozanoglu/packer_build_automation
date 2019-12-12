@@ -18,7 +18,7 @@
 TEMPLATE_FILENAME="packer-debStretch-qemu-kvm.json"
 
 
-for paket in jq curl sed awk; do which jq || { echo "HATA: 'jq' bulunamadi"; exit 1; }; done
+for paket in jq curl sed awk; do which jq || { echo "HATA: '$paket' bulunamadi"; exit 1; }; done
 
 iso_checksum_type="$(jq --raw-output '.variables.iso_checksum_type' ${template_filename})"
      iso_file_url="$(jq --raw-output '.variables.dynamic_mirror_url' ${template_filename})"
