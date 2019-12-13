@@ -2,6 +2,8 @@
 
 Fully automated installation for  Debian 9 stretch, 10 buster, pardus 19.0 with packer preseed automation into qemu-kvm Virtualisation
 
+[screenhot](https://github.com/AysadKozanoglu/packer_build_automation/raw/master/packer_build_screenshot.png)
+
 ### supported platforms
 QEMU-KVM (qcow2)
 
