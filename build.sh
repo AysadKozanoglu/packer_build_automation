@@ -12,7 +12,7 @@
 
       KURULUM_TIPI=$1
 
-  QEMUPACKERBUILDER=packer-debStretchi-qemu-kvm.json
+  QEMUPACKERBUILDER=packer-debStretch-qemu-kvm.json
 
     INFO_ERR_PACKER="HATA: 'packer' bulunamadi. \n Devam etmek icin önce packer kur. \n YARDIM LINK:\n https://www.packer.io/intro/getting-started/install.html "
     
@@ -58,23 +58,17 @@ function KURULUM_BASLAT() {
    packer build $@ ./$QEMUPACKERBUILDER
 }
 
-GET_OSINFO=`echo $GET_OSINFO | grep  -E -i "debian" -c`
+GET_OSINFO=`cat /etc/issue.net | grep  -E -i "debian|ubuntu" -c`
 
 if [[ $GET_OSINFO == "1" ]] ; then
-	which  qemu-system-x86_64 >  /dev/null || {  echo -e $INFO_ERR_PACKER; exit 1; }
+	which  qemu-system-x86_64 >  /dev/null || {  echo -e $INFO_ERR_KVM; exit 1; }
   else
-	which  qemu-kvm >  /dev/null || {  echo -e $INFO_ERR_PACKER; exit 1; }  	
+	which  qemu-kvm >  /dev/null || {  echo -e $INFO_ERR_KVM; exit 1; }  	
 fi
 
-#which packer  >  /dev/null || {  echo -e $INFO_ERR_PACKER; exit 1; }
+which packer  >  /dev/null || {  echo -e $INFO_ERR_PACKER; exit 1; }
 
-if [ ! -f "/usr/bin/packer" ]; then  
-  if [ ! -f "/bin/packer" ];then 
-    if [ ! -f "/usr/local/packer" ]; then 
-      echo -e $INFO_ERR_PACKER; exit 1; 
-   fi; 
- fi; 
-fi
+# if `packer -v > /tmp/packer_check 2>&1` ; then echo "packer bulundu"; else echo -e $INFO_ERR_PACKER; exit 1; fi
 
 # which ansible > /dev/null  || { echo -e $INFO_ERR_ANSIBLE; exit 1; }
 
