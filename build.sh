@@ -66,7 +66,16 @@ if [[ $GET_OSINFO == "1" ]] ; then
 	which  qemu-kvm >  /dev/null || {  echo -e $INFO_ERR_PACKER; exit 1; }  	
 fi
 
-which packer  >  /dev/null || {  echo -e $INFO_ERR_PACKER; exit 1; }
+#which packer  >  /dev/null || {  echo -e $INFO_ERR_PACKER; exit 1; }
+
+if [ ! -f "/usr/bin/packer" ]; then  
+  if [ ! -f "/bin/packer" ];then 
+    if [ ! -f "/usr/local/packer" ]; then 
+      echo -e $INFO_ERR_PACKER; exit 1; 
+   fi; 
+ fi; 
+fi
+
 # which ansible > /dev/null  || { echo -e $INFO_ERR_ANSIBLE; exit 1; }
 
 
