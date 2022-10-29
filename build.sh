@@ -2,7 +2,7 @@
 
 # Author: Aysad Kozanoglu
 #  email: aysadx@gmail.com
-#    web: aysad.pe.hu
+#    web: aysad.cloudns.cc
 #    git: https://github.com/AysadKozanoglu/packer_build_automation
 
 #
